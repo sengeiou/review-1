@@ -1,0 +1,23 @@
+
+一、隐私权和位置信息
+1、外部存储访问权限范围限定为应用文件和媒体
+对于以 Android 10 及更高版本为目标平台的应用，其访问权限范围限定为外部存储。
+此类应用可以查看外部存储设备内以下类型的文件，无需请求任何与存储相关的用户权限：
+特定于应用的目录中的文件（使用 getExternalFilesDir() 访问）。
+应用创建的照片、视频和音频片段（通过媒体库访问）。
+2、在后台运行时访问设备位置信息需要权限
+为了让用户更好地控制应用对位置信息的访问权限，Android 10 引入了 ACCESS_BACKGROUND_LOCATION 权限。
+与 ACCESS_FINE_LOCATION 和 ACCESS_COARSE_LOCATION 权限不同，ACCESS_BACKGROUND_LOCATION 权限仅会影响应用在后台运行时对位置信息的访问权限。
+
+以 Android 9 或更低版本为目标平台时自动授予访问权限
+如果您的应用为 ACCESS_FINE_LOCATION 或 ACCESS_COARSE_LOCATION 声明了 <uses-permission> 元素，则系统会在安装期间自动为 ACCESS_BACKGROUND_LOCATION 添加 <uses-permission> 元素。
+如果您的应用请求了 ACCESS_FINE_LOCATION 或 ACCESS_COARSE_LOCATION，系统会自动将 ACCESS_BACKGROUND_LOCATION 添加到请求中。
+
+
+二、、从后台启动 Activity 的限制
+从 Android 10 开始，系统会增加针对从后台启动 Activity 的限制。此项行为变更有助于最大限度地减少对用户造成的中断，并且可以让用户更好地控制其屏幕上显示的内容。
+
+
+二、在 Android 10上运行的应用无法获得 SYSTEM_ALERT_WINDOW 权限。
+这是因为绘制叠加层窗口会使用过多的内存，这对低内存 Android 设备的性能十分有害。
+如果在搭载 Android 9 或更低版本的 Go 版设备上运行的应用获得了 SYSTEM_ALERT_WINDOW 权限，则即使设备升级到 Android 10，也会保留此权限。

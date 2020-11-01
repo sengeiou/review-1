@@ -1,0 +1,35 @@
+
+---------------------所有应用
+一、隐私权变更
+为了增强用户隐私，Android 9 引入了若干行为变更，如限制后台应用访问设备传感器、限制通过 Wi-Fi 扫描检索到的信息，
+以及与通话、手机状态和 Wi-Fi 扫描相关的新权限规则和权限组。
+1、后台对传感器的访问受限
+Android 9 限制后台应用访问用户输入和传感器数据的能力。
+如果您的应用需要在运行 Android 9 的设备上检测传感器事件，请使用前台服务。
+2、限制访问通话记录
+3、限制访问 Wi-Fi 位置和连接信息
+
+二、现在强制执行 FLAG_ACTIVITY_NEW_TASK
+在 Android 9 中，您不能从非 Activity 环境中启动 Activity，除非您传递 Intent 标志 FLAG_ACTIVITY_NEW_TASK。
+如果您尝试在不传递此标志的情况下启动 Activity，则该 Activity 不会启动，系统会在日志中输出一则消息。
+
+
+---------------------targetSdkVersion>=28
+一、前台服务
+创建前台服务，需要在manifest.xml中申请权限
+   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+二、所有应用都使用HTTPS
+默认启用网络传输层安全协议 (TLS)
+
+在manifest.xml中的<app android:networkSecurityConfig="@xml/network_security_config"> 允许使用http
+<network-security-config>
+    <!--Android P 限制了明文流量的网络请求，非加密的流量请求都会被系统禁止掉 或者http换成https -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
+
