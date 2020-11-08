@@ -1,4 +1,7 @@
 Java 基础
+Java 的基本数据类型
+Java语言提供了八种基本类型：byte short int long float double char boolean。
+
 1、transient关键字的作用
 在对象序列化的时候，有些变量不需要序列化，比如密码等，transient修饰的变量不会被序列化。
 public class User implements Serializable{
@@ -601,7 +604,10 @@ HashMap由数组+链表组成的，数组是HashMap的主体，链表则是主�
 对于查找操作来讲，仍需遍历链表，然后通过key对象的equals方法逐一比对查找。所以，性能考虑，HashMap中的链表出现越少，性能才会越好。
 
 我们第一次新建一个HashMap对象的时候，默认的容量是16，若你只打算在HashMap里放入3个元素那将浪费至少13个空间。
-Java库里的HashMap其实是一个连续的链表数组，通过让key计算hash值后插入对应的index里。当hash值发生碰撞时，可以采用线性探测，二次hash，或者后面直接变成链表的结构来避免碰撞。因为hash的值不是连续的，所以hashmap实际需要占用的大小会比它实际能装的item的容量要大。
+Java库里的HashMap其实是一个连续的链表数组，通过让key计算hash值后插入对应的index里。当hash值发生碰撞时，
+可以采用线性探测，二次hash，或者后面直接变成链表的结构来避免碰撞。因为hash的值不是连续的，
+所以hashmap实际需要占用的大小会比它实际能装的item的容量要大。
+
 LoadFactor:
 加载因子是表示Hsah表中元素的填满的程度.
 加载因子越大,填满的元素越多,好处是,空间利用率高了,但冲突的机会加大了.

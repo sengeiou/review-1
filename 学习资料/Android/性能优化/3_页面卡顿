@@ -37,7 +37,7 @@ Hierarchy Viewer需要Root的机器(产品机没有开启ViewServer)才可以执
 
 2）Overdraw的分析处理
 绘制了多重背景.
- 比如主题背景、Activity背景、Layout背景
+ 比如主题背景、Layout背景、View背景
 绘制了不可见的UI元素.
 
 3、UI线程的复杂运算

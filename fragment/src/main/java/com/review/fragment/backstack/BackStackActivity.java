@@ -1,14 +1,16 @@
 package com.review.fragment.backstack;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
-import androidx.core.app.Fragment;
-import androidx.core.app.FragmentActivity;
-import androidx.core.app.FragmentManager;
-import androidx.core.app.FragmentTransaction;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.review.fragment.R;
 
@@ -32,7 +34,7 @@ import java.util.Stack;
              android:layout_alignParentTop="true"
              android:layout_marginTop="143dp" />
  */
-public class BackStackActivity extends FragmentActivity implements View.OnClickListener {
+public class BackStackActivity extends AppCompatActivity implements View.OnClickListener {
     private Stack<Integer> ids = new Stack<>();
     private Stack<String> names = new Stack<>();
     private Stack<String> tags = new Stack<>();
@@ -58,7 +60,7 @@ public class BackStackActivity extends FragmentActivity implements View.OnClickL
                     FragmentManager.BackStackEntry backStackEntry = getSupportFragmentManager().getBackStackEntryAt(i);
                     System.out.println("index=" + i + "->" + backStackEntry.getName());
                 }
-                List<Fragment> fragments = getSupportFragmentManager().getFragments();
+                List<Fragment> fragments = getSupportFragmentManager().getFragments(); //当前容器内
                 if(!ids.isEmpty()){
                     int id = ids.get(ids.size() - 1);
                     /**

@@ -48,7 +48,7 @@
 android:exported 设置此provider是否可以被其他应用使用。
 android:readPermission 从该provider读取数据需要的权限(query)
 android:writePermission 从该provider写入数据需要的权限(insert、update、delete)
-android:permission provider 读写该provider需要的权限 (query、insert、update、delete)
+android:permission  读写该provider需要的权限 (query、insert、update、delete)
 android:grantUriPermissions 临时权限标识，true时，意味着该provider下所有数据均可被临时使用；false时，则反之，
 但可以通过设置<grant-uri-permission>标签来指定哪些路径可以被临时使用。这么说可能还是不容易理解，
 我们举个例子，比如你开发了一个邮箱应用，其中含有附件需要第三方应用打开，但第三方应用又没有向你申请该附件的读权限，

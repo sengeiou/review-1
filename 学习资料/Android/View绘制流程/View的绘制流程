@@ -26,7 +26,7 @@ public final class ViewRootImpl implements ViewParent{
     private void performTraversals() {
             ......
             //最外层的根视图的widthMeasureSpec和heightMeasureSpec由来
-            //lp.width和lp.height在创建ViewGroup实例时等于MATCH_PARENT
+            //由Window size和自身的WindowManager.LayoutParams决定
             int childWidthMeasureSpec = getRootMeasureSpec(mWidth, lp.width);
             int childHeightMeasureSpec = getRootMeasureSpec(mHeight, lp.height);
             ......
@@ -69,7 +69,7 @@ public final class ViewRootImpl implements ViewParent{
     }
 }
 一、measure过程
-顶级View的performMeasure-> measure() -> onMeasure() -> child view的 measure() -> child view的onMeasure()
+ViewRootImpl.performMeasure-> DecorView.measure() -> DecorView.onMeasure() -> child view的 measure() -> child view的onMeasure()
 1、view的measure过程
     public final void measure(int widthMeasureSpec, int heightMeasureSpec) {
          ..............
@@ -81,13 +81,13 @@ public final class ViewRootImpl implements ViewParent{
                 getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
     }
 2、ViewGroup的measure过程
-    protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void measureChildren(int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         final int size = mChildrenCount;
         final View[] children = mChildren;
         for (int i = 0; i < size; ++i) {
             final View child = children[i];
             if ((child.mViewFlags & VISIBILITY_MASK) != GONE) { //view不为gone
-                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+                measureChild(child, parentWidthMeasureSpec, parentHeightMeasureSpec);
             }
         }
     }
@@ -100,13 +100,46 @@ public final class ViewRootImpl implements ViewParent{
         final int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec,
                 mPaddingTop + mPaddingBottom, lp.height);
 
-        child.measure(childWidthMeasureSpec, childHeightMeasureSpec); //child view的measure...onMeasure
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec); //如果child是ViewGroup，则继续测量它child
+    }
+
+    public static int getChildMeasureSpec(int spec, int padding, int childDimension) {
+        int specMode = MeasureSpec.getMode(spec); //父控件的model
+        int specSize = MeasureSpec.getSize(spec); //父控件的specSize
+
+        int size = Math.max(0, specSize - padding);//父控件去掉自身padding 内容区域size
+
+        int resultSize = 0; //根据父控件的measurespec和自身layout计算
+        int resultMode = 0;
+
+        switch (specMode) {
+        case MeasureSpec.EXACTLY: //父控件是精确测量的
+            if (childDimension >= 0) {//子view也是固定值  比如10dp
+                resultSize = childDimension;
+                resultMode = MeasureSpec.EXACTLY;
+            } else if (childDimension == LayoutParams.MATCH_PARENT) {
+                resultSize = size;
+                resultMode = MeasureSpec.EXACTLY; //精确
+            } else if (childDimension == LayoutParams.WRAP_CONTENT) {
+                resultSize = size; //
+                resultMode = MeasureSpec.AT_MOST;
+            }
+            break;
+
+        case MeasureSpec.AT_MOST:
+            .....
+            break;
+        case MeasureSpec.UNSPECIFIED:
+            .....
+            break;
+        }
+        return MeasureSpec.makeMeasureSpec(resultSize, resultMode);
     }
 
 二、layout过程
-顶级View的performLayout() ->layout() ->onLayout() ->child view的layout() ->child view的onLayout()
+ViewRootImpl.performLayout() ->DecorView.layout() ->DecorView.onLayout() ->child view的layout() ->child view的onLayout()
 layout()确定View自身的位置
-onLayout() 确定所有子元素的位置
+onLayout() 确定所有子元素的位置,先计算出child在父控件中的left、top、right、bottom，然后调用child.layout()
 ViewGroup.onLayout()是个抽象方法，实现类需要实现onLayout逻辑，比如LinearLayout
 
 1、View的layout过程
@@ -123,14 +156,28 @@ protected void onLayout(boolean changed, int left, int top, int right, int botto
     @Override
     protected abstract void onLayout(boolean changed,int l, int t, int r, int b); //抽象方法
 
-3、LinearLayout的onLayout
-protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-     int childCount=getChildCount();
-     for(int i=0;i<childCount;i++){
-        View child=getChildAt(i);
-        child.layout(left, top, left + width, top + height); //调用子view进行layout，
-     }
-}
+3、FrameLayout的onLayout
+  protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        layoutChildren(left, top, right, bottom, false /* no force left gravity */);
+    }
+
+  void layoutChildren(int left, int top, int right, int bottom, boolean forceLeftGravity) {
+        final int parentLeft = getPaddingLeftWithForeground(); //父控件的paddingLeft
+        final int parentTop = getPaddingTopWithForeground(); //父控件的paddingTop
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+             childLeft = parentLeft + lp.leftMargin; //相对于父控件的x坐标
+             childTop = parentTop + lp.topMargin;  //相对于父控件的y坐标
+             final int width = child.getMeasuredWidth();
+             final int height = child.getMeasuredHeight();
+             child.layout(childLeft, childTop, childLeft + width, childTop + height);//确定子view坐标
+            }
+        }
+  }
+
 三、draw
 1、View
     public void draw(Canvas canvas) {
@@ -184,6 +231,7 @@ protected void onLayout(boolean changed, int left, int top, int right, int botto
         onDrawScrollBars(canvas);
         ......
     }
+
     //绘制子View
     protected void dispatchDraw(Canvas canvas) {
 

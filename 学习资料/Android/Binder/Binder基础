@@ -63,11 +63,44 @@ Server进程里面的Binder对象指的是Binder本地对象，Client里面的�
 ----深入理解Java层的Binder
 IBinder/IInterface/Binder/BinderProxy/Stub
 
-IBinder是一个接口，它代表了一种跨进程传输的能力；只要实现了这个接口，就能将这个对象进行跨进程传递；这是驱动底层支持的；在跨进程数据流经驱动的时候，驱动会识别IBinder类型的数据，从而自动完成不同进程Binder本地对象以及Binder代理对象的转换。
-IInterface代表的就是远程server对象具有什么能力。具体来说，就是aidl里面的接口。
-Binder类，代表的其实就是Binder本地对象。
-BinderProxy类是Binder类的一个内部类，它代表远程进程的Binder对象的本地代理；这两个类都继承自IBinder, 因而都具有跨进程传输的能力；实际上，在跨越进程的时候，Binder驱动会自动完成这两个对象的转换。
-在使用AIDL的时候，编译工具会给我们生成一个Stub的静态内部类；这个类继承了Binder, 说明它是一个Binder本地对象，它实现了IInterface接口，表明它具有远程Server承诺给Client的能力；Stub是一个抽象类，具体的IInterface的相关实现需要我们手动完成，这里使用了策略模式。
+
+1、IInterface
+代表的就是远程server对象具有什么能力。具体来说，我们定义aidl接口就会继承IInterface
+public interface MyAIDL extends android.os.IInterface
+2、IBinder
+public interface IBinder
+是一个接口，它代表了一种跨进程传输的能力；只要实现了这个接口，就能将这个对象进行跨进程传递；
+这是驱动底层支持的；在跨进程数据流经驱动的时候，驱动会识别IBinder类型的数据，
+从而自动完成不同进程Binder本地对象以及Binder代理对象的转换。
+3、Binder
+public class Binder implements IBinder
+代表的其实就是Binder本地对象。
+4、BinderProxy
+public final class BinderProxy implements IBinder
+它代表远程Binder对象的本地代理, 因而都具有跨进程传输的能力；实际上，在跨越进程的时候，Binder驱动会自动完成这个对象的转换。
+
+
+客户端绑定远程服务,拿到BinderProxy对象
+    ServiceConnection  serviceConnection= new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //service=android.os.BinderProxy
+           myAIDL = MyAIDL.Stub.asInterface(service); //作为远程接口
+            //myAIDL=com.review.aidl.server.MyAIDL$Stub$Proxy@e0ee2a4
+           String info = myAIDL.getInfor("hello world");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+
+在使用AIDL的时候，编译工具会给我们生成一个Stub的静态内部类；这个类继承了Binder, 说明它是一个Binder本地对象，
+它实现了IInterface接口，表明它具有远程Server承诺给Client的能力；
+Stub是一个抽象类，具体的IInterface的相关实现由服务端实现。
 
 
 public interface IInterface
@@ -87,9 +120,13 @@ public class Binder implements IBinder {
 
 }
 
+public final class BinderProxy implements IBinder{
+
+}
+
 ------AIDL过程分析
 MyAIDL.aidl
-package com.review.aidl.client;
+package com.review.aidl.server;
 interface MyAIDL {
       String getInfor(String s);
 }
@@ -101,32 +138,31 @@ public interface MyAIDL extends android.os.IInterface {
 }
 
     /**
-     * 本地Binder实例,我们需要继承MyAIDL.Stub,实现它的方法，然后在Service 的onBind方法里面返回
+     * 本地Binder实例,我们需要继承MyAIDL.Stub,实现定义的接口，然后在Service 的onBind方法里面返回
      */
     public static abstract class Stub extends android.os.Binder implements com.review.aidl.client.MyAIDL {
         private static final java.lang.String DESCRIPTOR = "com.review.aidl.client.MyAIDL";
 
-        /**
-         * Construct the stub at attach it to the interface.
-         */
+
         public Stub() {
             this.attachInterface(this, DESCRIPTOR);
-            //便于 queryLocalInterface 查询本地binder
+            //以便 queryLocalInterface 查询本地binder
         }
 
         /**
-         * 如果在同一个进程内，则obj为本地Binder实例，否则为BinderProxy
+         * 如果在同一个进程内，则obj为本地Binder实例(MyAIDL.Stub)，否则为BinderProxy
          */
         public static com.review.aidl.client.MyAIDL asInterface(android.os.IBinder obj) {
             if ((obj == null)) {
                 return null;
             }
-            //1、本地实例
+            //1、本地实例,同进程内返回的是Service里面的binder实例,也就是MyAIDL.Stub实例
+            // BinderProxy重写queryLocalInterface 返回null，不为null则必然是Binder对象（MyAIDL.Stub实例）
             android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
             if (((iin != null) && (iin instanceof com.review.aidl.client.MyAIDL))) {
                 return ((com.review.aidl.client.MyAIDL) iin);
             }
-            //2、远程代理
+            //2、远程代理(不同进程，BinderProxy对象)
             return new com.review.aidl.client.MyAIDL.Stub.Proxy(obj);
         }
 
@@ -135,6 +171,7 @@ public interface MyAIDL extends android.os.IInterface {
             return this;
         }
 
+       //data为传入的数据   reply为返回的数据
         @Override
         public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException {
             switch (code) {
@@ -145,7 +182,7 @@ public interface MyAIDL extends android.os.IInterface {
                 case TRANSACTION_getInfor: { //接口
                     data.enforceInterface(DESCRIPTOR);
                     java.lang.String _arg0;
-                    _arg0 = data.readString(); //获取方法参数至
+                    _arg0 = data.readString(); //获取方法参数
                     java.lang.String _result = this.getInfor(_arg0); //调用自身的getInfor方法
                     reply.writeNoException();
                     reply.writeString(_result); //将结果返回
@@ -155,9 +192,9 @@ public interface MyAIDL extends android.os.IInterface {
             return super.onTransact(code, data, reply, flags);
         }
 
-        //Binder代理
+        //Binder代理，客户端绑定远程服务后，调用MyAIDL.Stub.asInterface(BinderProxy);
         private static class Proxy implements com.review.aidl.client.MyAIDL {
-            private android.os.IBinder mRemote;//远程binder
+            private android.os.IBinder mRemote;//远程BinderProxy实例
 
             Proxy(android.os.IBinder remote) {
                 mRemote = remote;
@@ -180,7 +217,7 @@ public interface MyAIDL extends android.os.IInterface {
                 try {
                     _data.writeInterfaceToken(DESCRIPTOR);
                     _data.writeString(s); //写入数据
-                    mRemote.transact(Stub.TRANSACTION_getInfor, _data, _reply, 0);//调用远程binder对象的transact
+                    mRemote.transact(Stub.TRANSACTION_getInfor, _data, _reply, 0);//调用远程binder对象即Stub的transact
                     _reply.readException();
                     _result = _reply.readString();
                 } finally {
@@ -194,20 +231,23 @@ public interface MyAIDL extends android.os.IInterface {
         static final int TRANSACTION_getInfor = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
     }
 
-看看asInterface方法，我们在bind一个Service之后，在onServiceConnecttion的回调里面，就是通过这个方法拿到一个远程的service的，这个方法做了什么呢？
+看看asInterface方法，我们在bind一个Service之后，在onServiceConnecttion的回调里面，就是通过这个方法拿到一个远程的service的Binder，这个方法做了什么呢？
         public static com.review.aidl.client.MyAIDL asInterface(android.os.IBinder obj) {
             if ((obj == null)) {
                 return null;
             }
-            //1、本地实例
+            //1、本地实例(相同进程，则为MyAIDL.Stub实例)
             android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
             if (((iin != null) && (iin instanceof com.review.aidl.client.MyAIDL))) {
                 return ((com.review.aidl.client.MyAIDL) iin);
             }
-            //2、远程代理
+            //2、远程代理(不同进程，则为BinderProxy对象)
             return new com.review.aidl.client.MyAIDL.Stub.Proxy(obj);
         }
-首先看函数的参数IBinder类型的obj，这个对象是驱动给我们的，如果是Binder本地对象，那么它就是Binder类型，如果是Binder代理对象，那就是BinderProxy类型；
+首先看函数的参数IBinder类型的obj，这个对象是驱动给我们的，
+如果是Binder本地对象，那么它就是Binder类型，
+如果是Binder代理对象，那就是BinderProxy类型；
+
 然后，正如上面自动生成的文档所说，它会试着查找Binder本地对象，如果找到，说明Client和Server都在同一个进程，这个参数直接就是本地对象，直接强制类型转换然后返回，
 如果找不到，说明是远程对象（处于另外一个进程）那么就需要创建一个Binder代理对象，让这个Binder代理实现对于远程对象的访问。
 这里说明一点：
@@ -323,7 +363,7 @@ private static class Proxy implements com.review.aidl.client.MyAIDL {
                 try {
                     _data.writeInterfaceToken(DESCRIPTOR);
                     _data.writeString(s); //写入数据
-                    mRemote.transact(Stub.TRANSACTION_getInfor, _data, _reply, 0);//调用远程binder对象的transact
+                    mRemote.transact(Stub.TRANSACTION_getInfor, _data, _reply, 0);/调用BinderProxy对象的transact实现跨进程通信。
                     _reply.readException();
                     _result = _reply.readString();
                 } finally {
@@ -333,8 +373,6 @@ private static class Proxy implements com.review.aidl.client.MyAIDL {
                 return _result;
             }
 }
-Proxy本身不是一个能跨越进程边界传输的对象，但是由于它持有了IBinder，通过IBinder实现跨进程。Proxy必须实现AIDL接口，将参数写入到Parcel中
-然后调用BinderProxy对象的transact实现跨进程通信。
 
 
 

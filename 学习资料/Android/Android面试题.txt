@@ -667,3 +667,10 @@ AlertDialog dialog = builder.create();
 2）使用一个Dialog Activity作为dialog来显示
 
 
+Android跨进通讯的几种方式？
+1.Bundle传递消息
+2.文件共享
+3.使用Messenger
+4.AIDL
+5.四大组件之一的contentProvider
+6. Socket 网络通信

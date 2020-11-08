@@ -85,9 +85,6 @@ public class Looper{
 public static void loop() {
 	//获取当前线程中的Looper
 	final Looper me = myLooper();
-	if (me == null) {
-		throw new RuntimeException("No Looper; Looper.prepare() wasn't called on this thread.");
-	}
 	final MessageQueue queue = me.mQueue; //一个Looper中会有一个MessageQueue
 	 for (;;) {
             Message msg = queue.next(); // might block
@@ -98,9 +95,35 @@ public static void loop() {
 
 			 msg.target.dispatchMessage(msg); //调用msg中保存的handler.dispatchMessage(msg)
 		}
-}
+     }
 
 }
 
 
+-------------------------
+public static void loop() {
+        final Looper me = myLooper();
+        final MessageQueue queue = me.mQueue;
+        for (;;) {
+            Message msg = queue.next(); // might block
+        }
+}
+1、为什么这个死循环不会造成ANR异常呢？
+如果主线程中进行耗时操作会引发ANR
+造成ANR的原因一般有两种：
+当前的事件没有机会得到处理（即主线程正在处理前一个事件，没有及时的完成或者looper被某种原因阻塞住了）
+当前的事件正在处理，但没有及时完成
 
+因为Android 的是由事件驱动的，looper.loop() 不断地接收事件、处理事件，每一个点击触摸或者说Activity的生命周期都是运行在 Looper.loop()
+的控制之下，如果它停止了，应用也就停止了。只能是某一个消息或者说对消息的处理阻塞了 Looper.loop().
+当MessageQueue中没有消息时，主线程阻塞，子线程往消息队列发送消息或者用户操作屏幕(比如触摸事件)，并且往管道文件写数据，主线程即被唤醒，
+从管道文件读取数据，主线程被唤醒只是为了读取消息，当消息读取完毕，再次睡眠。因此loop的循环并不会对CPU性能有过多的消耗。
+
+2、Print打印日志
+    Looper mainLooper = Looper.getMainLooper();
+    mainLooper.setMessageLogging(new Printer() {
+        @Override
+        public void println(String x) {
+            System.out.println(x);
+        }
+    });

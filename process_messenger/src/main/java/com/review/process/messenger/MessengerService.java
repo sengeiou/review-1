@@ -16,8 +16,8 @@ public class MessengerService extends Service {
     Messenger messenger= new Messenger(new Handler(){
         @Override
         public void handleMessage(Message msgfromClient) {
-            System.out.println("handleMessage");
-            System.out.println("msgfromClient="+msgfromClient+",replyTo="+msgfromClient.replyTo);
+            System.out.println("MessengerService handleMessage");
+            System.out.println("MessengerService msgfromClient="+msgfromClient+",replyTo="+msgfromClient.replyTo);
 
             switch (msgfromClient.what){
                 case MSG_WHAT:
@@ -31,7 +31,6 @@ public class MessengerService extends Service {
                     }
                     break;
             }
-           super.handleMessage(msgfromClient);
         }
     });
     @Override
@@ -41,7 +40,9 @@ public class MessengerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return messenger.getBinder();
+        IBinder binder = messenger.getBinder();
+        System.out.println("MessengerService onBind() binder="+binder);
+        return binder;
     }
 
     @Override

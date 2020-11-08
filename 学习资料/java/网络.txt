@@ -42,6 +42,7 @@ DatagramSocket  server = new DatagramSocket(5050); //接收方，在5050端口�
 
 3、 HTTP 协议; HTTP1.0 与 2.0 的区别，HTTP 报文结构
 http://mt.sohu.com/20160824/n465635124.shtml
+
 -------------HTTP1.0 & Http1.x
 Http1.0与Http1.x的主要区别主要体现在：
 1）缓存处理，

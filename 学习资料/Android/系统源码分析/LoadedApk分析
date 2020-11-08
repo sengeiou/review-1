@@ -2,16 +2,21 @@
 ----------------------LoadedApk
 APK加载信息
 public final class LoadedApk {
-
+    LoadedApk(ActivityThread activityThread) {
+        mActivityThread = activityThread;
+        mApplicationInfo = new ApplicationInfo();
+        mApplicationInfo.packageName = "android";
+        mClassLoader = ClassLoader.getSystemClassLoader();
+        mResources = Resources.getSystem();
+        mAppComponentFactory = createAppFactory(mApplicationInfo, mClassLoader);
+    }
     public Application makeApplication(boolean forceDefaultAppClass,
             Instrumentation instrumentation) {
         if (mApplication != null) {
             return mApplication;
         }
-
         Application app = null;
-
-        String appClass = mApplicationInfo.className; //如果有自定义Application
+        String appClass = mApplicationInfo.className;
         if (forceDefaultAppClass || (appClass == null)) {
             appClass = "android.app.Application";
         }
@@ -19,42 +24,23 @@ public final class LoadedApk {
         try {
             java.lang.ClassLoader cl = getClassLoader();
             if (!mPackageName.equals("android")) {
-                initializeJavaContextClassLoader();
+                initializeJavaContextClassLoader(); // Thread.currentThread().setContextClassLoader(contextClassLoader);
             }
-			//创建ApplicationContext
             ContextImpl appContext = ContextImpl.createAppContext(mActivityThread, this);
-			//调用Instrumentation创建Application
             app = mActivityThread.mInstrumentation.newApplication(
                     cl, appClass, appContext);
+            //其实就是通过classLoader反射创建Application
+            //Application app =  (Application) cl.loadClass(className).newInstance();
+            //app.attach(context); //  ->Applicaion.attachBaseContext(appContext);
+
             appContext.setOuterContext(app);
         } catch (Exception e) {
         }
-
-        mActivityThread.mAllApplications.add(app); //一个APP可能有多进程，每个进程都会创建一个Application
+        mActivityThread.mAllApplications.add(app);
         mApplication = app;
 
-        if (instrumentation != null) {
-            try {
-			    //调用Application的onCreate()
-                instrumentation.callApplicationOnCreate(app);
-            } catch (Exception e) {
-
-            }
-        }
-
-        // Rewrite the R 'constants' for all library apks.
-        SparseArray<String> packageIdentifiers = getAssets(mActivityThread)
-                .getAssignedPackageIdentifiers();
-        final int N = packageIdentifiers.size();
-        for (int i = 0; i < N; i++) {
-            final int id = packageIdentifiers.keyAt(i);
-            if (id == 0x01 || id == 0x7f) {
-                continue;
-            }
-
-            rewriteRValues(getClassLoader(), packageIdentifiers.valueAt(i), id);
-        }
 
         return app;
     }
+
 }
