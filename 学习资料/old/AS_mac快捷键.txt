@@ -1,0 +1,111 @@
+查看栈顶的Activity
+adb shell dumpsys activity top grep | more
+查看Activity任务栈
+adb shell dumpsys activity activities 
+输出logcat日志到文件中
+adb logcat -d > logcat.txt
+
+
+------无线调试
+1、重启adb
+adb kill-server
+adb start-server
+2、获取当前链接wifi的<ip>
+ip -f inet addr show wlan0
+3、adb tcpip 5555
+4、adb connect <ip>
+
+
+
+F1~F12
+F1: 查看类或方法的注释 ctrl+J 也可以实现
+F4 定位到属性、方法、类等它们的声明。类似cmd +左键点击进入
+
+注释
+cmd+/  单行注释
+cmd+alt+/ 多行注释
+
+alt+enter:快速修复 
+alt+F7 查看方法在哪被调用,类似的还有ctrl+alt+H
+alt+UP/Down 扩大或缩小选择范围
+
+shift+F6 重命名
+shift+alt+up|down 将一行代码上移或下移一行
+shift+alt+C 显示最近修改的代码
+shift+left/right 逐个字母选中
+shift+enter 自动在下一行添加行
+
+
+ctrl+I 实现抽象类或接口中的方法
+Ctrl+H 查看类的继承关系
+ctrl+alt+O 优化导入包
+ctrl+alt+I 自动行缩进
+ctrl+alt+H 打开调用层级结构即谁调用了当前选中的对象
+ctrl+空格  自动补全
+ctrl+J 查看注释
+ctrl+enter/cmd+N 生成setter、getter、constructor等
+
+cmd+alt+B 查看接口方法实现类（光标在接口方法名上）
+cmd+alt+V 把选中代码提取为变量 类似 alt+enter
+cmd+alt+T surround with（if..else/try..catch/etc..）
+cmd+alt+F 把方法内选中代码抽取为成员属性
+cmd+alt+P 将内部变量抽取为方法的参数
+cmd+alt+C 提取为常量
+cmd+alt+M 将代码块抽取为方法 
+cmd+alt+L 格式化代码  
+cmd+alt+O 在当前project中搜索属性(成员和静态，不论是否私有)，再按一次...
+cmd+alt+enter 在当前行上添加一行，光标定位到行首
+cmd+alt+left/right 返回到上一步操作
+
+
+cmd+shift+U 大小写转换
+cmd+shift+up/down 当前内容行上移或下移一行（在本方法内）
+cmd+shift+O 在当前project中搜索文件，再按一次...
+cmd+shift+enter 补全当前语句(比如自动加分号，自动加花括号)，如果有分号，则换行。
+
+cmd+ctrl+F AS全屏显示
+
+cmd+鼠标左键  查看元素简短说明，点击进入
+cmd+U 进入到父类中的同名方法中，也就是进入被覆写的方法中
+cmd+E 显示最近打开过的文件 open recent file
+cmd+X或cmd+delete 删除一行 
+cmd+D 复制一行 
+cmd+Z 撤销 cmd+c 复制 cmd+v 粘贴  cmd+s 保存  
+cmd+O 在当前project中搜索class，再按一次，可以搜索非当前project中的class
+cmd+F/cmd+R 查找与替换
+cmd+W 关闭当前文件
+cmd+P 显示选中方法的参数
+cmd+N 生成代码 ctrl+enter
+cmd+left/right 跳转到行 开头或结尾
+cmd+减号/加号  折叠/展开当前代码块
+cmd+G 查找下一个
+cmd+shift+G 查找上一个
+cmd+F12 或 cmd+7 查看类中的成员，相当于eclipse中ctrl+o
+
+搜索相关
+cmd+o 在当前project中搜索class，再按一次...
+cmd+shift+o  在当前project中搜索文件 ，再按一次...
+cmd+alt+o 在当前project中搜索属性(成员和静态，不论是否私有) 
+cmd+shift+F 全局搜索
+
+Debug
+step into F7 单步进入  进入方法内部。类似eclipse的F5
+step over F8 单步跳过  直接进行下一步。类似eclipse的F6
+step out  Shift+F8 跳出当前方法，回到调用处。类似eclipse的F7
+结束调试 cmd+alt+R  类似eclipse的F8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
