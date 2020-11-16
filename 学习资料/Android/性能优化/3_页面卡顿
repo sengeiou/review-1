@@ -36,9 +36,10 @@ Hierarchy Viewer需要Root的机器(产品机没有开启ViewServer)才可以执
 红色: 4次及4次以上的overdraw
 
 2）Overdraw的分析处理
-绘制了多重背景.
- 比如主题背景、Layout背景、View背景
-绘制了不可见的UI元素.
+绘制了多重背景：
+ 主题背景
+ 根布局背景：与主题背景相同的话 就不用再设置，或者设置windowbackground为null
+ 容器背景：--纯色背景、shape背景(颜色与背景相同)
 
 3、UI线程的复杂运算
 UI线程的复杂运算会造成UI无响应, 当然更多的是造成UI响应停滞, 卡顿.

@@ -9,8 +9,8 @@
 善用TextView的Drawable减少布局层级
 
 二、使用include 和merge标签减少复用布局而产生的布局嵌套，使用ViewStub懒加载减少渲染元素
-使用merge标签作为根布局的xml的子控件，会被添加到include所在的父容器组件中，减少一个层级。
-<ViewStub> 标签实质上是一个宽高都为 0 的不可见 View. 通过延迟加载布局的方式优化布局提升渲染性能.
+1、使用merge标签作为根布局的xml的子控件，会被添加到include所在的父容器组件中，减少一个层级。
+2、<ViewStub> 标签实质上是一个宽高都为 0 的不可见 View. 通过延迟加载布局的方式优化布局提升渲染性能.
 public final class ViewStub extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

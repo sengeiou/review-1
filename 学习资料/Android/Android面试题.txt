@@ -336,11 +336,7 @@ Out Of Memory：内存溢出
 如果是跨进程的话，需要使用AIDL
 2、通过broadcast(广播)的形式
 
-15. Android 各个版本 API 的区别
-http://blog.csdn.net/lijun952048910/article/details/7980562
 
-Android代码中实现WAP方式联网-360
-http://blog.csdn.net/asce1885/article/details/7844159
 
 16. 如何保证一个后台服务不被杀死,比较省电的方式是什么?(百度)
 1、onStartCommand方法，返回START_STICKY

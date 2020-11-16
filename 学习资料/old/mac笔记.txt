@@ -1,3 +1,6 @@
+appleID：zhangquanit@126.com zhang196804A
+
+
 按键说明：
 苹果键⌘:command, ⌃:ctrl, ⇧:shift, ⌥:alt/option, ⏎:enter/return
 
@@ -10,6 +13,7 @@ cmd+F：在应用程序中搜索    cmd+Space：用Spotlight进行桌面搜索
 cmd+shift+G 快速进入某个文件夹（有时候知道了某个文件路径 想快速进入）
 cmd+alt+C 选中文件，可复制文件路径
 cmd+~ 同一个应用多个窗口间相互切换
+cmd+tab 不同应用之间切换
 cmd+z:撤销
 cmd+shift+z:反撤销，撤销的逆向操作　　
 如何剪切文件？
