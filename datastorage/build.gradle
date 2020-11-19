@@ -31,5 +31,5 @@ dependencies {
 
     implementation config.rxPermissions  //rxpermission
     implementation config.rxAndroid
-
+    implementation config.rxJava
 }

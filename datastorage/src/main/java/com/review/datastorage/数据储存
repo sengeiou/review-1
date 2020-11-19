@@ -90,6 +90,9 @@ getWritableDatabase()或getReadableDatabase()：如果数据库不存在，则�
 
 
 四、使用ContentProvider存储数据
+当app启动时，就会注册contentProvider，很多第三方sdk都通过ContentProvider来完成初始化。
+App.attachBaseContext...ContentProvider.onCreate...App.onCreate
+
 参考：
 http://www.jianshu.com/p/f5ec75a9cfea
 http://blog.csdn.net/chuyuqing/article/details/39995607

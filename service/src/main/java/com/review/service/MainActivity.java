@@ -1,8 +1,7 @@
 package com.review.service;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +28,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_processService).setOnClickListener(this);
         findViewById(R.id.btn_intentService).setOnClickListener(this);
         findViewById(R.id.btn_aidl).setOnClickListener(this);
+        findViewById(R.id.btn_intentfilter).setOnClickListener(this);
 
     }
 
@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.btn_startService:
                 System.out.println("-------------------------------------------------");
                 Intent intent = new Intent(this, BackgroundService.class);
-                intent.putExtra("msg","hello world="+System.currentTimeMillis());
+                intent.putExtra("msg", "hello world=" + System.currentTimeMillis());
                 startService(intent);
 
                 break;
@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 stopService(intent);
                 break;
             case R.id.btn_bindService:
-              intent = new Intent(this, BinderService.class); //在同一个进程内
+                intent = new Intent(this, BinderService.class); //在同一个进程内
 //                intent = new Intent(this, ProcessService.class); //本应用跨进程  不支持bind，需要写aidl
                 bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
                 break;
@@ -74,9 +74,29 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 intent.putExtra("url", "http://www.baidu.com");
                 startService(intent);
                 break;
+            case R.id.btn_intentfilter:
+                System.out.println("主进程:" + Process.myPid());
+                try {
+                    //通过intent-filter打开service
+                    intent = new Intent("com.review.service.intent.action");
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    startService(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
+                }
+                break;
 
         }
     }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("代码注册的广播");
+        }
+    };
 
     ServiceConnection serviceConnection = new ServiceConnection() {
 

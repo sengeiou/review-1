@@ -16,10 +16,10 @@ https://github.com/dmilicic/Android-Clean-Boilerplate
 
 android-architecture
 Google推荐的架构方式
-https://github.com/googlesamples/android-architecture
+https://github.com/android/architecture-samples
 
 Jekpack组件
-https://github.com/android/architecture-components-samples/tree/88747993139224a4bb6dbe985adf652d557de621
+https://github.com/android/architecture-components-samples
 
 一、MVC
 二、MVP

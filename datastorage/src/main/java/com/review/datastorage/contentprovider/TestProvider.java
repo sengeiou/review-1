@@ -27,6 +27,7 @@ public class TestProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        System.out.println("TestProvider..onCreate");
         mOpenHelper = new TestDBHelper(getContext());
         contentResolver = getContext().getContentResolver();
         return true;

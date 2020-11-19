@@ -1,6 +1,6 @@
 1、Rxjava深入学习
 2、dagger2
-
+3、Arouter
 7、编写编译时注解
 8、LayoutInflater
 原理、主题换肤
@@ -29,6 +29,13 @@ Groovy语法、Gradle DSL、Gradle插件、如何开源项目、Gradle task...
 
 google官网demo系列
 https://github.com/android
+
+google 架构demo
+https://github.com/android/architecture-samples
+
+googlecodelabs代码实例
+https://github.com/googlecodelabs
+
 
 面试题库
 www.wanandroid.com

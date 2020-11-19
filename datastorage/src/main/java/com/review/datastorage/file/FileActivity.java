@@ -10,9 +10,10 @@ import android.os.Environment;
 import android.view.View;
 
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 
 import com.review.datastorage.R;
-import com.tbruyelle.rxpermissions.RxPermissions;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -22,13 +23,14 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import rx.functions.Action1;
+import io.reactivex.functions.Consumer;
+
 
 /**
  * @author 张全
  */
 
-public class FileActivity extends Activity implements View.OnClickListener{
+public class FileActivity extends FragmentActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,11 +212,16 @@ public class FileActivity extends Activity implements View.OnClickListener{
     private void startDownload(){
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(new Action1<Boolean>() {
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void call(Boolean granted) {
-                        System.out.println("granted="+granted);
+                    public void accept(Boolean granted) throws Exception {
+                        System.out.println("granted=" + granted);
                         doDownload();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
                     }
                 });
     }

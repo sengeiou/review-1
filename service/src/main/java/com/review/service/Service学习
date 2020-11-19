@@ -1,3 +1,6 @@
+
+https://blog.csdn.net/javazejian/article/details/52709857
+
 一、startService/stopService
 特点：
 1、运行在主线程中,所以耗时操作应该放在子线程中。
@@ -9,6 +12,26 @@ stopService关闭服务
 onDestroy
 3、支持跨进程调用
 Activity可以调用其它应用中的Service，或者其他进程中的Service
+4、android 5.0后禁止使用隐式意图打开service
+    <service android:name=".IntentFilterService"  android:exported="false">
+         <intent-filter>
+             <action android:name="com.review.service.intent.action"/>
+             <category android:name="android.intent.category.DEFAULT"/>
+         </intent-filter>
+    </service>
+    //通过隐式意图打开service 会报错
+    intent = new Intent("com.review.service.intent.action");
+    intent.addCategory(Intent.CATEGORY_DEFAULT);
+    startService(intent);
+java.lang.IllegalArgumentException: Service Intent must be explicit: Intent { act=com.review.service.intent.action cat=[android.intent.category.DEFAULT] }
+    at android.app.ContextImpl.validateServiceIntent(ContextImpl.java:1558)
+    at android.app.ContextImpl.startServiceCommon(ContextImpl.java:1599)
+    at android.app.ContextImpl.startService(ContextImpl.java:1571)
+    at android.content.ContextWrapper.startService(ContextWrapper.java:669)
+    at com.review.service.MainActivity.onClick(MainActivity.java:83)
+
+5、8.0 后台服务限制
+8.0禁止应用在后台startService
 
 关于 onStartCommand(Intent intent, int flags, int startId)的返回值
 1)START_STICKY
@@ -69,7 +92,7 @@ MyIntentService onDestroy,thread=main
 五、在其他进程中开启Service
 <service android:name=".ProcessService" android:process=":remote"/>
 则ProcessService运行在remote进程中的主线程中。
-缺点：不支持不同进程内activity与service之间的bind, 要持支跨进程绑定，则需要使用aidl
+缺点：不支持不同进程内activity与service之间的bind, 要持支跨跨进程绑定，则需要使用aidl
 
 六、AIDL
 AIDL（Android Interface Definition Language）是Android接口定义语言的意思

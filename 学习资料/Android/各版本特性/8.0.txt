@@ -1,6 +1,11 @@
 
 一、后台执行限制
-1、应用无法使用manifest注册大部分隐式广播
+1、应用无法使用manifest注册隐式广播
+只能通过context.registReceiver()注册。
+之前注册的隐式广播可以使用JobScheduler完成类似工作。
+系统目前保留了部分隐式广播：
+参考 https://developer.android.google.cn/guide/components/broadcast-exceptions
+
 2、在后台运行的应用对后台服务的访问受到限制。
 处于前台时，应用可以自由创建和运行前台服务与后台服务。
 进入后台时，在一个持续数分钟的时间窗内，应用仍可以创建和使用服务。在该时间窗结束后，应用将被视为处于 空闲状态。 此时，系统将停止应用的后台服务。

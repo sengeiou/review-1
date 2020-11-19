@@ -11,6 +11,7 @@
         android:protectionLevel="normal" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".sp.SPActivity" />
         <activity android:name=".file.FileActivity" />
 
         <provider

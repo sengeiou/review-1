@@ -8,7 +8,6 @@ import android.view.View;
 import com.review.datastorage.contentprovider.ProviderActivity;
 import com.review.datastorage.db.DBActivity;
 import com.review.datastorage.file.FileActivity;
-import com.review.datastorage.sp.SPActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -26,7 +25,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_sp:
-                startActivity(new Intent(this, SPActivity.class));
                 break;
             case R.id.btn_file:
                 startActivity(new Intent(this, FileActivity.class));
