@@ -89,12 +89,14 @@ MyIntentService onStartCommand,flags=0,startId=2,thread=main
 MyIntentService,onHandleIntent ,thread=IntentService[MyIntentService]
 MyIntentService onDestroy,thread=main
 
-五、在其他进程中开启Service
+五、JobService
+
+六、在其他进程中开启Service
 <service android:name=".ProcessService" android:process=":remote"/>
 则ProcessService运行在remote进程中的主线程中。
 缺点：不支持不同进程内activity与service之间的bind, 要持支跨跨进程绑定，则需要使用aidl
 
-六、AIDL
+七、AIDL
 AIDL（Android Interface Definition Language）是Android接口定义语言的意思
 它可以用于让某个Service与多个应用程序组件之间进行跨进程通信，从而可以实现多个应用程序共享同一个Service的功能。
 

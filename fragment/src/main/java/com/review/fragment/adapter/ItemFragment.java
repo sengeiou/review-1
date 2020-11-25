@@ -19,6 +19,7 @@ import com.review.fragment.R;
 public class ItemFragment extends Fragment {
     TextView textView;
     private static final String PARAM_TITLE = "PARAM_TITLE";
+    private boolean mIntercepterVisibleHint;
 
     public static Bundle getBundle(String title) {
         Bundle bundle = new Bundle();
@@ -26,28 +27,31 @@ public class ItemFragment extends Fragment {
         return bundle;
     }
 
+    public ItemFragment() {
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        System.out.println("onAttach--"+this);
+        System.out.println("onAttach--" + this);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("onCreate--"+this);
+        System.out.println("onCreate--" + this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        System.out.println("onCreateView--"+this);
-        return inflater.inflate(R.layout.item_frag, container,false);
+        System.out.println("onCreateView--" + this);
+        return inflater.inflate(R.layout.item_frag, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        System.out.println("onViewCreated--"+this);
+        System.out.println("onViewCreated--" + this);
         String title = getArguments().getString(PARAM_TITLE);
         textView = view.findViewById(R.id.textView);
         textView.setText(title);
@@ -56,56 +60,74 @@ public class ItemFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.out.println("onActivityCreated--"+this);
+        System.out.println("onActivityCreated--" + this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        System.out.println("onStart--"+this);
+        System.out.println("onStart--" + this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("onResume--"+this);
+        System.out.println("onResume--" + this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("onPause--"+this);
+        System.out.println("onPause--" + this);
     }
-
 
 
     @Override
     public void onStop() {
         super.onStop();
-        System.out.println("onStop--"+this);
+        System.out.println("onStop--" + this);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        System.out.println("onSaveInstanceState--"+this);
+        System.out.println("onSaveInstanceState--" + this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("onDestroy--"+this);
+        System.out.println("onDestroy--" + this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        System.out.println("onDestroyView--"+this);
+        System.out.println("onDestroyView--" + this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        System.out.println("onDetach--"+this);
+        System.out.println("onDetach--" + this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(mIntercepterVisibleHint&&null!=getView()){
+            getView().setVisibility(isVisibleToUser?View.VISIBLE:View.GONE);
+        }
+        System.out.println("setUserVisibleHint--isVisibleToUser=" + isVisibleToUser + " " + this);
+    }
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        System.out.println("setMenuVisibility--menuVisible=" + menuVisible + " " + this);
+    }
+
+    public void setIntercepterVisibleHint(boolean intercepterVisibleHint) {
+        mIntercepterVisibleHint = intercepterVisibleHint;
     }
 }

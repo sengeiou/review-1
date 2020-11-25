@@ -20,10 +20,14 @@ public class AdapterAct extends AppCompatActivity {
     }
 
     public void pagerAdapter(View view) {
-        startActivity(new Intent(this,FragmentPagerAdapterAct.class));
+        startActivity(new Intent(this, FragmentPagerAdapterAct.class));
     }
 
     public void statePagerAdapter(View view) {
-        startActivity(new Intent(this,FragmentStatePagerAdapterAct.class));
+        startActivity(new Intent(this, FragmentStatePagerAdapterAct.class));
+    }
+
+    public void tabActivity(View view) {
+        startActivity(new Intent(this, TabAct.class));
     }
 }

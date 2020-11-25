@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="FragmentPagerAdapter"
+        android:textAllCaps="false"
         android:onClick="pagerAdapter"
         />
 
@@ -17,6 +18,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="FragmentStatePagerAdapter"
+        android:textAllCaps="false"
         android:onClick="statePagerAdapter"
+        />
+
+    <Button
+        android:id="@+id/tabActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tab Activity"
+        android:textAllCaps="false"
+        android:onClick="tabActivity"
         />
 </LinearLayout>
