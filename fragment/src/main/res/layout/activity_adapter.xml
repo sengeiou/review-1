@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:padding="20dp"
+    android:id="@+id/container"
     android:layout_height="match_parent">
 
-    <Button
+    <!--<Button
         android:id="@+id/pagerAdapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,5 +30,5 @@
         android:text="Tab Activity"
         android:textAllCaps="false"
         android:onClick="tabActivity"
-        />
+        />-->
 </LinearLayout>

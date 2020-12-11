@@ -123,7 +123,7 @@ viewpager.setOffscreenPageLimit(fragmentCount);
 
 onPause--ItemFragment{831b928 }
 onStop--ItemFragment{831b928 }
-onDestroyView--ItemFragment{831b928 }
+onDestroyView--ItemFragment{831b928 }  --只会销毁view，fragment实例还在
 
 2）FragmentStatePagerAdapter
 该实现将只保留当前页面，当页面离开视线后，就会被消除，释放其资源；而在页面需要显示时，生成新的页面。
@@ -146,7 +146,7 @@ onPause--ItemFragment{cd6468 #2}
 onStop--ItemFragment{cd6468 #2 }
 onDestroyView--ItemFragment{cd6468 #2 }
 onDestroy--ItemFragment{cd6468 #2 }
-onDetach--ItemFragment{cd6468 #2 }
+onDetach--ItemFragment{cd6468 #2 }  --会销毁fragment实例，释放内存
 
 
 8、notifyDataSetChanged不起作用
@@ -226,6 +226,22 @@ onDetach--ItemFragment{cd6468 #2 }
         }
     }
 }
+
+12、ListFragment
+适合用来写demo，或者简单的列表布局，参考AdapterActivity
+    public static class MyListFrag extends ListFragment {
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            setListAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, mTitles));
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            startActivity(new Intent(getContext(), mActivities[position]));
+        }
+    }
 
 
 
